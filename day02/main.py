@@ -11,8 +11,11 @@ def make_range_list(id_range_string: str) -> list[str]:
 
 
 def is_invalid_id(id: str) -> bool:
-    search_string = (id + id)[1:-1]
-    return id in search_string if len(id) % 2 == 0 else False
+    if len(id) % 2 == 0:
+        half: int = len(id) // 2
+        return id[:half] == id[half:]
+    else:
+        return False
 
 
 def get_invalid_ids(id_range: str) -> list[int]:

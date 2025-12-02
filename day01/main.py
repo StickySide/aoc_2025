@@ -1,3 +1,6 @@
+# Advent of Code 2025 - Day 1 part 2
+
+
 class Dial:
     def __init__(self) -> None:
         self.dial_position: int = 50
@@ -15,24 +18,22 @@ class Dial:
         elif direction == "R":
             self.dial_position += distance
 
-        # Resolve quotient, and dial position
+        # Resolve quotient, and new dial position
         quotient, self.dial_position = divmod(self.dial_position, 100)
         count: int = abs(quotient)
 
         # Edge Cases
-        if (
-            direction == "L" and self.dial_position == 0
-        ):  # Turned left and landed on zero, add one to the quotient
+        # Turned left and landed on zero, add one to the count
+        if direction == "L" and self.dial_position == 0:
             count += 1
-        elif (
-            direction == "L" and starting_position == 0
-        ):  # Started at zero, turned left
+        # Started at zero, turned left, subtract one from the count
+        elif direction == "L" and starting_position == 0:
             count -= 1
 
         # Update zero count
         self.zero_count += count
 
-    def solve(self, input: list[str]):
+    def solve(self, input: list[str]) -> None:
         print("Rotating dial...")
         for line in input:
             self.rotate(direction=line[0], distance=int(line[1:]))

@@ -2,10 +2,8 @@
 
 
 def get_input(filename: str) -> list[str]:
-    input = ""
     with open(filename, "r") as input_file:
-        input: str = input_file.read()
-    return input.split(",")
+        return input_file.read().split(",")
 
 
 def make_range_list(id_range_string: str) -> list[str]:

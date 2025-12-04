@@ -13,20 +13,10 @@ def get_twelve_biggest(battery_bank: str) -> list[str]:
     bank: list[str] = [battery for battery in battery_bank]
     biggest: list[str] = []
 
-    # First battery is the biggest excluding the last 11
-    biggest.append(max(bank[:-11]))
-
-    # Get the index of that first battery and adjust remaining bank
-    remaining_bank = bank[bank.index(str(biggest[0])) + 1 :]
-
-    # Repeat the same process but excluding less and less of the last batteries
-    for i in range(10, 0, -1):
-        biggest_battery = max(remaining_bank[:-i])
+    for i in range(11, -1, -1):
+        biggest_battery = max(bank[:-i]) if i != 0 else max(bank)
         biggest.append(biggest_battery)
-        remaining_bank = remaining_bank[remaining_bank.index(biggest_battery) + 1 :]
-
-    # Add the final battery
-    biggest.append(max(remaining_bank))
+        bank = bank[bank.index(biggest_battery) + 1 :]
 
     return biggest
 

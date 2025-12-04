@@ -3,8 +3,7 @@
 
 def get_input(filename: str) -> list[str]:
     with open(filename, "r") as input_file:
-        input = [line.strip() for line in input_file]
-    return input
+        return [line.strip() for line in input_file]
 
 
 def get_twelve_biggest(battery_bank: str) -> list[str]:

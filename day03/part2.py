@@ -2,7 +2,6 @@
 
 
 def get_input(filename: str) -> list[str]:
-    input: list[str] = []
     with open(filename, "r") as input_file:
         input = [line.strip() for line in input_file]
     return input

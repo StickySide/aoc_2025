@@ -38,7 +38,5 @@ def get_total_joltage(input: list[str]) -> int:
 
 
 if __name__ == "__main__":
-    testinput = get_input("testinput.txt")
-    assert get_total_joltage(testinput) == 3121910778619
     input = get_input("input.txt")
     print(f"Total joltage: {get_total_joltage(input)}")

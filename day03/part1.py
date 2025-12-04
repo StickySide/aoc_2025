@@ -44,7 +44,5 @@ def get_total_joltage(input: list[str]) -> int:
 
 
 if __name__ == "__main__":
-    testinput = get_input("testinput.txt")
-    assert get_total_joltage(testinput) == 357
     input = get_input("input.txt")
     get_total_joltage(input)

@@ -37,7 +37,6 @@ def get_amount_fresh_ids(data: list[str]) -> int:
 
     # Initialize list with first interval
     merged: list[tuple[int, int]] = [ranges[0]]
-    amount_fresh_ids: int = 0
 
     # Process each subsequent range and merge overlapping intervals
     for a, b in ranges[1:]:
@@ -55,10 +54,7 @@ def get_amount_fresh_ids(data: list[str]) -> int:
 
     # Calculate the amount of 'fresh' ingredients, and total them
     # Each interval [a, b] contains (b - a + 1) IDs
-    for a, b in merged:
-        amount_fresh_ids += b - a + 1
-
-    return amount_fresh_ids
+    return sum(b - a + 1 for a, b in merged)
 
 
 if __name__ == "__main__":

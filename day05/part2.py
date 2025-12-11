@@ -25,34 +25,37 @@ def build_ranges(data: list[str]) -> list[tuple[int, int]]:
 
 
 def get_amount_fresh_ids(data: list[str]) -> int:
+    """
+    Count total fresh ingredient IDs by merging overlapping ranges.
+    Uses interval merging to avoid counting overlapping IDs multiple times.
+    """
     ranges, _ = split_range_and_ingredients(data)
     ranges = build_ranges(ranges)
 
     # Sort the ranges by the starting number
-    ranges.sort(key=lambda ranges: ranges[0])
+    ranges.sort(key=lambda r: r[0])
     print(f"Sorted ranges: {ranges}")
 
     # Initialize list with first interval
     merged: list[tuple[int, int]] = [ranges[0]]
     amount_fresh_ids: int = 0
 
-    print(f"Merge list: {merged}")
+    # Process each subsequent range and merge overlapping intervals
     for a, b in ranges[1:]:
         x, y = merged[-1]
 
-        print(f"Comparing {x}-{y} and {a}-{b}")
-        # If there is overlap, but the merged interval covers the entire new interval
+        # Case 1: New range is completely contained within the last merged range
         if y >= b:
-            continue
-        # If merged overlaps just the end of the interval
+            continue  # Skip, already covered
+        # Case 2: New range partially overlaps (extends beyond the last merged range)
         elif y >= a:
-            merged[-1] = (x, b)  # Merge them and update the last merged interval
-            print(f" They overlap! Merging {x}-{b}")
+            merged[-1] = (x, b)  # Extend the merged range to include new upper bound
+        # Case 3: New range is completely separate (gap exists)
         elif a > y:
-            merged.append((a, b))  # Otherwise add the non-overlapped interval to the merge list
-            print(" No overlap")
+            merged.append((a, b))  # Add as a new separate interval
 
     # Calculate the amount of 'fresh' ingredients, and total them
+    # Each interval [a, b] contains (b - a + 1) IDs
     for a, b in merged:
         amount_fresh_ids += b - a + 1
 
@@ -62,7 +65,6 @@ def get_amount_fresh_ids(data: list[str]) -> int:
 if __name__ == "__main__":
     testinput = get_input("testinput.txt")
     test_fresh = get_amount_fresh_ids(testinput)
-
     assert test_fresh == 14
 
     puzzle_input = get_input("input.txt")

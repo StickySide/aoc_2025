@@ -28,18 +28,41 @@ def get_amount_fresh_ids(data: list[str]) -> int:
     ranges, _ = split_range_and_ingredients(data)
     ranges = build_ranges(ranges)
 
-    fresh_ids: set[int] = set()
+    # Sort the ranges by the starting number
+    ranges.sort(key=lambda ranges: ranges[0])
+    print(f"Sorted ranges: {ranges}")
 
-    for lower, upper in ranges:
-        for number in range(int(lower), int(upper) + 1):
-            fresh_ids.add(number)
+    # Initialize list with first interval
+    merged: list[tuple[int, int]] = [ranges[0]]
+    amount_fresh_ids: int = 0
 
-    return len(fresh_ids)
+    print(f"Merge list: {merged}")
+    for a, b in ranges[1:]:
+        x, y = merged[-1]
+
+        print(f"Comparing {x}-{y} and {a}-{b}")
+        # If there is overlap, but the merged interval covers the entire new interval
+        if y >= b:
+            continue
+        # If merged overlaps just the end of the interval
+        elif y >= a:
+            merged[-1] = (x, b)  # Merge them and update the last merged interval
+            print(f" They overlap! Merging {x}-{b}")
+        elif a > y:
+            merged.append((a, b))  # Otherwise add the non-overlapped interval to the merge list
+            print(" No overlap")
+
+    # Calculate the amount of 'fresh' ingredients, and total them
+    for a, b in merged:
+        amount_fresh_ids += b - a + 1
+
+    return amount_fresh_ids
 
 
 if __name__ == "__main__":
     testinput = get_input("testinput.txt")
     test_fresh = get_amount_fresh_ids(testinput)
+
     assert test_fresh == 14
 
     puzzle_input = get_input("input.txt")

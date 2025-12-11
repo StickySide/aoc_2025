@@ -1,4 +1,5 @@
 # Advent of Code Day 5 Part 2
+from time import time
 
 
 def get_input(filename: str) -> list[str]:
@@ -29,6 +30,8 @@ def get_amount_fresh_ids(data: list[str]) -> int:
     Count total fresh ingredient IDs by merging overlapping ranges.
     Uses interval merging to avoid counting overlapping IDs multiple times.
     """
+
+    # Parse the data
     ranges, _ = split_range_and_ingredients(data)
     ranges = build_ranges(ranges)
 
@@ -38,17 +41,15 @@ def get_amount_fresh_ids(data: list[str]) -> int:
     # Initialize list with first interval
     merged: list[tuple[int, int]] = [ranges[0]]
 
-    # Process each subsequent range and merge overlapping intervals
+    # Process each subsequent interval and merge overlaps
     for a, b in ranges[1:]:
         x, y = merged[-1]
 
-        # Case 1: New range is completely contained within the last merged range
-        if y >= b:
-            continue  # Skip, already covered
-        # Case 2: New range partially overlaps (extends beyond the last merged range)
-        elif y >= a:
-            merged[-1] = (x, b)  # Extend the merged range to include new upper bound
-        # Case 3: New range is completely separate (gap exists)
+        # If the intervals overlap
+        if a <= y:
+            merged[-1] = (x, max(b, y))  # Extend the merged range to include new upper bound
+
+        # If the intervals do not overlap
         elif a > y:
             merged.append((a, b))  # Add as a new separate interval
 
@@ -63,4 +64,6 @@ if __name__ == "__main__":
     assert test_fresh == 14
 
     puzzle_input = get_input("input.txt")
+    start_time = time()
     print(get_amount_fresh_ids(puzzle_input))
+    print(f"Answer found in {time() - start_time} seconds")

@@ -34,7 +34,6 @@ def get_amount_fresh_ids(data: list[str]) -> int:
 
     # Sort the ranges by the starting number
     ranges.sort(key=lambda r: r[0])
-    print(f"Sorted ranges: {ranges}")
 
     # Initialize list with first interval
     merged: list[tuple[int, int]] = [ranges[0]]

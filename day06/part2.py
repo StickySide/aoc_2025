@@ -25,8 +25,8 @@ def get_answer(data: list[str]):
     # Reverse each row character-by-character to read right-to-left
     # Filter out newlines but keep spaces (important for column alignment)
     for row in data:
-        columns = [num for num in row[::-1] if num != "\n"]
-        array.append(columns)
+        col = [num for num in row[::-1] if num != "\n"]
+        array.append(col)
 
     print("ARRAY:")
     for row in array:

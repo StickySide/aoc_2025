@@ -43,8 +43,7 @@ def get_answer(data: list[str]):
         if column[-1] == "+":
             column_answers.append(sum(int(num) for num in column[:-1]))
         elif column[-1] == "*":
-            numbers = [int(num) for num in column[:-1]]
-            column_answers.append(get_product(numbers))
+            column_answers.append(get_product([int(num) for num in column[:-1]]))
 
     # Sum all column results
     return sum(column_answers)

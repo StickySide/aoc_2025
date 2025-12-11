@@ -9,22 +9,27 @@ def split_range_and_ingredients(data: list[str]) -> tuple[list[str], list[str]]:
     return data[:split_point], data[split_point + 1 :]
 
 
-def build_ranges(data: list[str]) -> set[int]:
-    ranges: set[int] = set()
+def build_ranges(data: list[str]) -> list[tuple[int, int]]:
+    ranges: list[tuple[int, int]] = []
 
     for string in data:
         lower, upper = string.split("-")
-        for numbers in range(int(lower), int(upper) + 1):
-            ranges.add(numbers)
+        ranges.append((int(lower), int(upper)))
 
+    # print(f"Ranges: {ranges}")
     return ranges
 
 
-def get_fresh_ingredients(ids: list[int], ranges: set[int]) -> list[int]:
+def get_fresh_ingredients(ids: list[int], ranges: list[tuple[int, int]]) -> list[int]:
     fresh_ingredients: list[int] = []
+
     for id in ids:
-        if id in ranges:
-            fresh_ingredients.append(id)
+        for lower, upper in ranges:
+            # print(f"Testing id: {id} in {lower} - {upper}")
+            if id <= upper and id >= lower:
+                fresh_ingredients.append(id)
+                break
+
     return fresh_ingredients
 
 
@@ -41,5 +46,4 @@ if __name__ == "__main__":
     assert test_fresh == 3
 
     puzzle_input = get_input("input.txt")
-    print(puzzle_input)
     print(get_number_fresh_ingredients(puzzle_input))

@@ -1,7 +1,7 @@
 # Advent of Code Day 7 Part 2
 from typing import Deque
 from collections import deque
-from copy import deepcopy
+from time import time
 
 Coord = tuple[int, int]
 
@@ -126,34 +126,38 @@ def solve(data: list[list[str]]) -> int:
     """ """
 
     timelines: int = 0
-    paths: list[list[Coord]] = []
-    q: Deque[list[Coord]] = deque()
+
+    q: Deque[Coord] = deque()
+    visited: set[Coord] = set()
 
     # Find start
     for x in range(len(data[0])):
         if data[0][x] == "S":
-            q.append([(0, x)])
+            q.append((0, x))
 
     # BFS loop
+    iterations: int = 1
+    start_time = time()
     while q:
-        path = q.popleft()
-        current_cell = Cell(data, path[-1])
+        current_cell = Cell(data, q.popleft())
+        print(f"q: {len(q)} i: {iterations} t:{time() - start_time}")
+        if current_cell.coord in visited:
+            continue
 
         if current_cell.below == "." and current_cell.coord_below:
-            path.append(current_cell.coord_below)
             if current_cell.coord_below[0] == len(data) - 1:
                 timelines += 1
             else:
-                q.append(path)
+                q.append(current_cell.coord_below)
 
         elif current_cell.below == "^" and current_cell.coord_below:
-            splitter_cell = Cell(data, current_cell.coord_below)
-            if splitter_cell.coord_left:
-                path_left = path + [splitter_cell.coord_left]
-                q.append(path_left)
-            if splitter_cell.coord_right:
-                path_right = path + [splitter_cell.coord_right]
-                q.append(path_right)
+            current_cell = Cell(data, current_cell.coord_below)
+            if current_cell.coord_left:
+                q.append(current_cell.coord_left)
+            if current_cell.coord_right:
+                q.append(current_cell.coord_right)
+
+        iterations += 1
 
     return timelines
 

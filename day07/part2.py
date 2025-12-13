@@ -125,6 +125,7 @@ class Cell:
 def solve(data: list[list[str]]) -> int:
     """ """
 
+    timelines: int = 0
     paths: list[list[Coord]] = []
     q: Deque[list[Coord]] = deque()
 
@@ -141,7 +142,7 @@ def solve(data: list[list[str]]) -> int:
         if current_cell.below == "." and current_cell.coord_below:
             path.append(current_cell.coord_below)
             if current_cell.coord_below[0] == len(data) - 1:
-                paths.append(path)
+                timelines += 1
             else:
                 q.append(path)
 
@@ -154,7 +155,7 @@ def solve(data: list[list[str]]) -> int:
                 path_right = path + [splitter_cell.coord_right]
                 q.append(path_right)
 
-    return len(paths)
+    return timelines
 
 
 if __name__ == "__main__":

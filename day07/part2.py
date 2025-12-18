@@ -123,39 +123,43 @@ class Cell:
 
 
 def solve(data: list[list[str]]) -> int:
-    """ """
+    """
+    Count distinct beam paths that reach the bottom of the grid.
+    Uses BFS with memoization to track how many beams pass through each cell.
+    """
 
     timelines: int = 0
     start: Coord = (0, 0)
-
+    memo: dict[Coord, int] = {}  # Maps coordinate -> number of beams passing through
+    visited: set[Coord] = set()  # Tracks which cells we've already processed
     q: Deque[Coord] = deque()
 
-    # Find start
+    # Find start position and initialize with 1 beam
     for x in range(len(data[0])):
         if data[0][x] == "S":
             start = (0, x)
             q.append(start)
+            memo[start] = 1  # Start with 1 beam at the start position
 
-    # BFS loop
-
-    memo: dict[Coord, int] = {}
-    memo[start] = 1
-    visited: set[Coord] = set()
-
+    # BFS: Process each cell once, propagating beam counts downward
     while q:
         current_cell = Cell(data, q.popleft())
 
+        # Skip if already processed (prevents infinite loops)
         if current_cell.coord in visited:
             continue
 
         visited.add(current_cell.coord)
 
-        beams = memo.get(current_cell.coord, 0)  # Assign current cell beams
+        # Get how many beams have reached this cell
+        beams = memo.get(current_cell.coord, 0)
 
+        # Case 1: Empty space below - propagate beams downward
         if current_cell.below == "." and current_cell.coord_below:
             memo[current_cell.coord_below] = beams + memo.get(current_cell.coord_below, 0)
             q.append(current_cell.coord_below)
 
+        # Case 2: Splitter below - split beams to left and right
         elif current_cell.below == "^" and current_cell.coord_below:
             current_cell = Cell(data, current_cell.coord_below)
             if current_cell.coord_left:
@@ -165,9 +169,9 @@ def solve(data: list[list[str]]) -> int:
                 memo[current_cell.coord_right] = beams + memo.get(current_cell.coord_right, 0)
                 q.append(current_cell.coord_right)
 
+        # Case 3: Reached bottom row - count these beams as complete timelines
         elif current_cell.coord[0] == len(data) - 1:
             timelines += beams
-        # print(memo)
 
     print(timelines)
     return timelines

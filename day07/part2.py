@@ -126,39 +126,50 @@ def solve(data: list[list[str]]) -> int:
     """ """
 
     timelines: int = 0
+    start: Coord = (0, 0)
 
     q: Deque[Coord] = deque()
-    visited: set[Coord] = set()
 
     # Find start
     for x in range(len(data[0])):
         if data[0][x] == "S":
-            q.append((0, x))
+            start = (0, x)
+            q.append(start)
 
     # BFS loop
-    iterations: int = 1
-    start_time = time()
+
+    memo: dict[Coord, int] = {}
+    memo[start] = 1
+    visited: set[Coord] = set()
+
     while q:
         current_cell = Cell(data, q.popleft())
-        print(f"q: {len(q)} i: {iterations} t:{time() - start_time}")
+
         if current_cell.coord in visited:
             continue
 
+        visited.add(current_cell.coord)
+
+        beams = memo.get(current_cell.coord, 0)  # Assign current cell beams
+
         if current_cell.below == "." and current_cell.coord_below:
-            if current_cell.coord_below[0] == len(data) - 1:
-                timelines += 1
-            else:
-                q.append(current_cell.coord_below)
+            memo[current_cell.coord_below] = beams + memo.get(current_cell.coord_below, 0)
+            q.append(current_cell.coord_below)
 
         elif current_cell.below == "^" and current_cell.coord_below:
             current_cell = Cell(data, current_cell.coord_below)
             if current_cell.coord_left:
+                memo[current_cell.coord_left] = beams + memo.get(current_cell.coord_left, 0)
                 q.append(current_cell.coord_left)
             if current_cell.coord_right:
+                memo[current_cell.coord_right] = beams + memo.get(current_cell.coord_right, 0)
                 q.append(current_cell.coord_right)
 
-        iterations += 1
+        elif current_cell.coord[0] == len(data) - 1:
+            timelines += beams
+        # print(memo)
 
+    print(timelines)
     return timelines
 
 
